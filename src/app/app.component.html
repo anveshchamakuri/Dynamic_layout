@@ -24,7 +24,7 @@
        [cdkDropListData]="rowarray" (cdkDropListDropped)="drop($event)">
       <div class="row col-sm-12" style="padding: 0px !important;
       margin: 0px !important;">
-      <div class="col-sm-{{a}}  abc" [style.height.vh]="heightval[i]" *ngFor="let a of rowarray;let i = index;" cdkDrag>
+      <div class="col-sm-{{a}}  abc top" [style.height.vh]="heightval[i]" *ngFor="let a of rowarray;let i = index;" cdkDrag>
         <div *ngIf="a == 12 " >
           <a (click)="open(content)"><i class="fa fa-pencil" (click)="editrow(i)" aria-hidden="true"></i></a>
           </div>
