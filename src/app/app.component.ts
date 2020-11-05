@@ -1,7 +1,8 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormArray, FormGroup, Validators, FormControl } from "@angular/forms";
+import {  HostListener } from '@angular/core';
 
 
 @Component({
@@ -10,8 +11,52 @@ import { FormBuilder, Validators } from '@angular/forms';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
+  name = 'Angular 4';
+  height = 150;
+  y = 100;
+  oldY = 0;
+  grabber = false;
+  hindex;
+  rowchange(index){
+    this.hindex = index;
+  }
+  @HostListener('document:mousemove', ['$event'])
+  onMouseMove(event: MouseEvent) {
+    if (!this.grabber) {
+        return;
+    }
+    this.resizer(event.clientY - this.oldY);
+    this.oldY = event.clientY;
+  }
+
+  @HostListener('document:mouseup', ['$event'])
+  onMouseUp(event: MouseEvent) {
+    this.grabber = false;
+  }
+
+  resizer(offsetY: number) {
+    debugger
+    this.height += offsetY;
+  }
+
+
+  @HostListener('document:mousedown', ['$event'])
+  onMouseDown(event: MouseEvent) {
+    this.grabber = true;
+    this.oldY = event.clientY;
+  }
+
   title = 'dynamiclayout';
-  rowvalue = [12];
+  items = [
+    'Item 0',
+    'Item 1',
+    'Item 2',
+    'Item 3',
+    'Item 4',
+    'Item 5',
+    'Item 6',
+    'Item 7',
+  ]
   div1;
   div2;
   btns;
@@ -23,13 +68,14 @@ export class AppComponent implements OnInit {
   heightval = [];
   indval;
   Val;
+  rowarray = []
   private regForm: any;
   constructor(private modalService: NgbModal, private formBuilder: FormBuilder) { }
   aab;
+  rowvalue;
   ngOnInit() {
-    this.aab = [{rowsize: '4', height: '20px' },
-    {rowsize: '3', height: '30px' }, {rowsize: '3', height: '40px' },
-    {rowsize: '4', height: '50px' }];
+    this.rowvalue =  { rowsize : '12'};
+    this.rowarray  =  [{ rowsize : '12'}];
     this.regForm = this.formBuilder.group({
       heightval: ['', Validators.required]
     });
@@ -43,10 +89,19 @@ export class AppComponent implements OnInit {
     this.icns = false;
     this.heightval = [];
   }
+  an;
+  cha(rowIndex) {
+    debugger
+    this.an = {val : this.regForm.value.heightval};
+    console.log(this.rowarray)
+    this.rowarray[rowIndex]['Data'] = this.an;
+    //this.aa = [this.regForm.value.heightval] ;
+  }
   onAddRow() {
-    Array.prototype.push.apply(this.rowarray, this.rowvalue);
-   // this.heightval[this.rowarray.length - 1 ] = 200;
-    console.log(this.rowarray.length);
+    debugger
+    this.rowarray.push(this.rowvalue);
+    console.log(this.rowarray);
+    console.log(this.rowarray);
   }
   onRemoveRow(rowIndex: number) {
     this.rowarray.splice(rowIndex, 1);
@@ -55,21 +110,17 @@ export class AppComponent implements OnInit {
     this.indval = rowIndex;
     this.regForm.value.heightval = '';
   }
-
-   layout(b) {
+  Vall;
+   layout(b,c) {
     this.Val = b;
+    this.Vall = c;
   }
   aa;
   layoutsave() {
     debugger
     this.rowarray.splice(this.indval, 1);
-    Array.prototype.push.apply(this.rowarray, this.Val);
-    console.log(this.rowarray);
-    this.aa = [this.regForm.value.heightval] ;
-    Array.prototype.push.apply(this.heightval, this.aa);
-    //this.heightval[this.indval] = this.regForm.value.heightval;
+    this.rowarray.push(this.Val, this.Vall);
   }
-  // tslint:disable-next-line: member-ordering
   closeResult = '';
 
   /***Edit* */
@@ -126,17 +177,5 @@ export class AppComponent implements OnInit {
     this.tabletdiv = false;
     this.laptopdiv = true;
   }
-  rowarray = ['12'];
-  drop(event: CdkDragDrop<string[]>) {
-    if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-    } else {
-      transferArrayItem(event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex);
-    }
-  }
-
-}
+ }
 

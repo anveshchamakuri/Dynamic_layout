@@ -17,19 +17,25 @@
     <button *ngIf="btns" class="m-2" mat-raised-button color="accent" (click)="previewback()">Back</button>
   </div>
 </div>
+<!--<div class="textarea"   >
+  this is a text area
+  <div class="grabber"  ></div>  
+</div>-->
 <div *ngIf="div1">
-<div cdkDropListGroup >
-    <div
-      cdkDropList
-       [cdkDropListData]="rowarray" (cdkDropListDropped)="drop($event)">
+<div>
+    <div>
       <div class="row col-sm-12" style="padding: 0px !important;
       margin: 0px !important;">
-      <div class="col-sm-{{a}}  abc top" [style.height.vh]="heightval[i]" *ngFor="let a of rowarray;let i = index;" cdkDrag>
-        <div *ngIf="a == 12 " >
+      <div class="col-sm-{{a.rowsize}}  abc "  *ngFor="let a of rowarray;let i = index;"  (mouseenter)="rowchange(i)" [style.height.px]='height' contenteditable="true">
+        <form [formGroup]="regForm" (ngSubmit)="layoutsave(regForm.value)">
+          <input matInput placeholder="Enter" (change)="cha(i)" formControlName="heightval">
+          </form>
+        <div *ngIf="a.rowsize == 12 ">
           <a (click)="open(content)"><i class="fa fa-pencil" (click)="editrow(i)" aria-hidden="true"></i></a>
           </div>
           <i class="fa fa-trash" (click)="onRemoveRow(i)" aria-hidden="true"></i>
        </div>
+       
     </div>
     </div>
   </div>
@@ -38,7 +44,11 @@
   <button mat-raised-button color="primary" (click)="onAddRow()" >Add Element</button>&nbsp;
 
 </div>
+<pre style="font-size:15px">{{ rowarray | json }}</pre>
 </div>
+
+
+
 <!-----Edit-->
 <ng-template #content let-modal>
   <div class="modal-header">
@@ -50,7 +60,7 @@
   <div class="modal-body">
     <p>Select row layout from predefined options.</p><br>
    <a class="btn btn-primary" (click)=layout([12])>1&nbsp;&nbsp;</a>&nbsp;
-   <a class="btn btn-primary" (click)=layout([6,6])>2&nbsp;&nbsp; </a>&nbsp;
+   <a class="btn btn-primary" (click)=layout({rowsize:6},{rowsize:6})>2&nbsp;&nbsp; </a>&nbsp;
    <a class="btn btn-primary" (click)=layout([4,4,4])>3&nbsp;&nbsp;</a>&nbsp;
    <a class="btn btn-primary" (click)=layout([3,3,3,3])>4&nbsp;&nbsp;</a>&nbsp;
    <a class="btn btn-primary" (click)=layout([4,8])>4/8&nbsp;&nbsp;</a>&nbsp;
@@ -107,3 +117,5 @@ margin: 0px !important;">
   </div>
     </div>
 </div>
+<!--<app-layout></app-layout>-->
+
